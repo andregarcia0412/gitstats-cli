@@ -3,18 +3,20 @@
 #include <map>
 #include <functional>
 #include "github_service.hpp"
+#include "config_service.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    GithubService service = GithubService();
+    GithubService githubService = GithubService();
+    ConfigService configService = ConfigService();
     map<string, function<void(int, char **)>> commands;
     commands["help"] = [](int argc, char *argv[])
     {
         cout << "this is help" << endl;
     };
 
-    commands["config"] = [&service](int argc, char *argv[])
+    commands["config"] = [&githubService, &configService](int argc, char *argv[])
     {
         if (argc < 3)
         {
@@ -24,10 +26,7 @@ int main(int argc, char *argv[])
         if (string(argv[2]) == "--set-token")
         {
             string token = argv[3];
-            service.setToken(token);
-            cout << token << endl;
-
-            // TODO: add writing to json file to save password
+            configService.createConfigFile(token);
         }
 
         if (string(argv[2]) == "--list")
@@ -36,7 +35,7 @@ int main(int argc, char *argv[])
         }
     };
 
-    commands["languages"] = [&service](int argc, char *argv[])
+    commands["languages"] = [&githubService, &configService](int argc, char *argv[])
     {
         if (argc < 3)
         {
@@ -44,11 +43,20 @@ int main(int argc, char *argv[])
             return;
         }
 
-        auto langs = service.getMostUsedLanguages(argv[2]);
+        string token = configService.getTokenFromConfigFile();
+        githubService.setToken(token);
 
-        for (auto &[lang, percent] : langs)
+        try
         {
-            cout << fixed << setprecision(2) << lang << ": " << percent << "%" << endl;
+            auto langs = githubService.getMostUsedLanguages(argv[2]);
+            for (auto &[lang, percent] : langs)
+            {
+                cout << fixed << setprecision(2) << lang << ": " << percent << "%" << endl;
+            }
+        }
+        catch (exception &e)
+        {
+            cout << e.what() << endl;
         }
     };
 
