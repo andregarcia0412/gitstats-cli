@@ -4,6 +4,7 @@
 !*.h
 !*.hpp
 !.gitignore
+!.gitattributes
 !Makefile
 
 .vscode
