@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <curl/curl.h>
 #include "json.hpp"
+#include <string>
 
 using json = nlohmann::json;
 using namespace std;
@@ -71,10 +72,14 @@ std::vector<pair<std::string, double>> GithubService::getMostUsedLanguages(std::
     {
         curl_easy_cleanup(curl);
         curl_slist_free_all(headers);
-        throw runtime_error("Request Failed");
+        throw runtime_error("Error: Request Failed");
     }
 
     auto data = json::parse(response);
+    if (data["status"] == "401")
+    {
+        throw runtime_error("Error: Bad Credentials");
+    }
 
     auto repos = data["data"]["user"]["repositories"]["nodes"];
 
