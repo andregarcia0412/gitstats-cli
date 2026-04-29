@@ -6,7 +6,7 @@ using json = nlohmann::json;
 using namespace std;
 namespace fs = std::filesystem;
 
-void ConfigService::createConfigFile(string token)
+void ConfigService::createConfigFile()
 {
     fs::create_directories("./.config");
     ofstream configFile("./.config/config.json");
@@ -16,14 +16,33 @@ void ConfigService::createConfigFile(string token)
         throw runtime_error("Error opening config file");
     }
 
-    configFile << "{\n  \"token\":" << "\"" << token << "\"\n}" << endl;
+    configFile << "{\n}" << endl;
     configFile.close();
+}
+
+void ConfigService::setTokenOnConfigFile(string token)
+{
+
+    if (!fs::exists("./.config/config.json"))
+        createConfigFile();
+    json data;
+
+    ifstream inConfigFile("./.config/config.json");
+    if (inConfigFile)
+        inConfigFile >> data;
+
+    data["token"] = token;
+
+    ofstream outConfigFile("./.config/config.json");
+    outConfigFile << data.dump(2);
 }
 
 string ConfigService::getTokenFromConfigFile()
 {
-    ifstream configFile("./.config/config.json");
+    if (!fs::exists("./.config/config.json"))
+        return "";
 
+    ifstream configFile("./.config/config.json");
     if (!configFile.is_open())
     {
         throw runtime_error("Error opening config file");
@@ -32,5 +51,8 @@ string ConfigService::getTokenFromConfigFile()
     json data;
     configFile >> data;
 
-    return data["token"];
+    if (!data.contains("token") || !data["token"].is_string())
+        return "";
+
+    return data["token"].get<string>();
 }

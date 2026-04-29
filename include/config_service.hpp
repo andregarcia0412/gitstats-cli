@@ -5,8 +5,9 @@
 class ConfigService
 {
 public:
-    void createConfigFile(std::string token);
+    void createConfigFile();
     std::string getTokenFromConfigFile();
+    void setTokenOnConfigFile(std::string token);
 };
 
 #endif
