@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Iinclude
+CXXFLAGS = -std=c++17 -Iinclude
 LIBS = -lcurl
 
 SRC = $(shell find src -name "*.cpp")
