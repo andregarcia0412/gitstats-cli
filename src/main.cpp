@@ -4,6 +4,8 @@
 #include <functional>
 #include "github_service.hpp"
 #include "config_service.hpp"
+#include "set_token_command.hpp"
+#include "config_help_command.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -20,18 +22,24 @@ int main(int argc, char *argv[])
     {
         if (argc < 3)
         {
-            // TODO: config help when argc < 3;
+            ConfigHelpCommand().execute(argc, argv);
+            return;
         }
 
         if (string(argv[2]) == "--set-token")
         {
-            string token = argv[3];
-            configService.createConfigFile(token);
+            SetTokenCommand(configService).execute(argc, argv);
+        }
+
+        if (string(argv[2]) == "--remove-token")
+        {
+            configService.setTokenOnConfigFile("");
         }
 
         if (string(argv[2]) == "--list")
         {
-            // TODO: add json listing
+            string token = configService.getTokenFromConfigFile();
+            cout << "token=" << token << endl;
         }
     };
 
