@@ -1,5 +1,4 @@
 #include <iostream>
-#include <iomanip>
 #include <map>
 #include <functional>
 #include "github_service.hpp"
@@ -8,19 +7,20 @@
 #include "config_help_command.hpp"
 #include "remove_token_command.hpp"
 #include "config_list_command.hpp"
+#include "languages_list_command.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    GithubService githubService = GithubService();
     ConfigService configService = ConfigService();
+    GithubService githubService = GithubService(configService);
     map<string, function<void(int, char **)>> commands;
     commands["help"] = [](int argc, char *argv[])
     {
         cout << "this is help" << endl;
     };
 
-    commands["config"] = [&githubService, &configService](int argc, char *argv[])
+    commands["config"] = [&configService](int argc, char *argv[])
     {
         if (argc < 3)
         {
@@ -44,29 +44,9 @@ int main(int argc, char *argv[])
         }
     };
 
-    commands["languages"] = [&githubService, &configService](int argc, char *argv[])
+    commands["languages"] = [&githubService](int argc, char *argv[])
     {
-        if (argc < 3)
-        {
-            cout << "Use: languages <user>" << endl;
-            return;
-        }
-
-        string token = configService.getTokenFromConfigFile();
-        githubService.setToken(token);
-
-        try
-        {
-            auto langs = githubService.getMostUsedLanguages(argv[2]);
-            for (auto &[lang, percent] : langs)
-            {
-                cout << fixed << setprecision(2) << lang << ": " << percent << "%" << endl;
-            }
-        }
-        catch (exception &e)
-        {
-            cout << e.what() << endl;
-        }
+        LanguagesListCommand(githubService).execute(argc, argv);
     };
 
     if (argc < 2)
