@@ -6,6 +6,8 @@
 #include "config_service.hpp"
 #include "set_token_command.hpp"
 #include "config_help_command.hpp"
+#include "remove_token_command.hpp"
+#include "config_list_command.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -33,13 +35,12 @@ int main(int argc, char *argv[])
 
         if (string(argv[2]) == "--remove-token")
         {
-            configService.setTokenOnConfigFile("");
+            RemoveTokenCommand(configService).execute(argc, argv);
         }
 
         if (string(argv[2]) == "--list")
         {
-            string token = configService.getTokenFromConfigFile();
-            cout << "token=" << token << endl;
+            ConfigListCommand(configService).execute(argc, argv);
         }
     };
 
