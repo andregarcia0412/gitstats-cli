@@ -28,17 +28,19 @@ int main(int argc, char *argv[])
             return;
         }
 
-        if (string(argv[2]) == "--set-token")
+        string subcmd = string(argv[2]);
+
+        if (subcmd == "--set-token")
         {
             SetTokenCommand(configService).execute(argc, argv);
         }
 
-        if (string(argv[2]) == "--remove-token")
+        if (subcmd == "--remove-token")
         {
             RemoveTokenCommand(configService).execute(argc, argv);
         }
 
-        if (string(argv[2]) == "--list")
+        if (subcmd == "--list")
         {
             ConfigListCommand(configService).execute(argc, argv);
         }
