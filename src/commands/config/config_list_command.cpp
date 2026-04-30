@@ -2,10 +2,7 @@
 #include <iostream>
 using namespace std;
 
-ConfigListCommand::ConfigListCommand(ConfigService configService)
-{
-    this->configService = configService;
-}
+ConfigListCommand::ConfigListCommand(ConfigService &configService) : configService(configService) {}
 
 void ConfigListCommand::execute(int argc, char *argv[])
 {

@@ -7,10 +7,10 @@
 class SetTokenCommand : ICommand
 {
 private:
-    ConfigService configService;
+    ConfigService &configService;
 
 public:
-    SetTokenCommand(ConfigService configService);
+    SetTokenCommand(ConfigService &configService);
     void execute(int argc, char *argv[]) override;
 };
 

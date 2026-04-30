@@ -2,10 +2,7 @@
 #include <iostream>
 using namespace std;
 
-SetTokenCommand::SetTokenCommand(ConfigService configService)
-{
-    this->configService = configService;
-}
+SetTokenCommand::SetTokenCommand(ConfigService &configService) : configService(configService) {}
 
 void SetTokenCommand::execute(int argc, char *argv[])
 {

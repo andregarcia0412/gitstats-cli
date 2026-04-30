@@ -1,10 +1,8 @@
 #include "github_service.hpp"
 #include <map>
-#include <vector>
 #include <algorithm>
 #include <curl/curl.h>
 #include "json.hpp"
-#include <string>
 
 using json = nlohmann::json;
 using namespace std;
@@ -15,15 +13,11 @@ static size_t WriteCallback(void *contents, size_t size, size_t nmemb, std::stri
     return size * nmemb;
 }
 
-GithubService::GithubService(string token)
-{
-    this->token = token;
-}
-
-GithubService::GithubService() {}
+GithubService::GithubService(ConfigService &configService) : configService(configService) {}
 
 std::vector<pair<std::string, double>> GithubService::getMostUsedLanguages(std::string login)
 {
+    string token = configService.getTokenFromConfigFile();
     map<string, long long> languageBytes;
     string response;
 
@@ -128,14 +122,4 @@ std::vector<pair<std::string, double>> GithubService::getMostUsedLanguages(std::
         top10.push_back(sorted[i]);
     }
     return top10;
-}
-
-void GithubService::setToken(string token)
-{
-    this->token = token;
-}
-
-string GithubService::getToken()
-{
-    return this->token;
 }

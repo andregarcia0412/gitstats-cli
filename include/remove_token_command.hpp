@@ -6,10 +6,10 @@
 class RemoveTokenCommand : ICommand
 {
 private:
-    ConfigService configService;
+    ConfigService &configService;
 
 public:
-    RemoveTokenCommand(ConfigService configService);
+    RemoveTokenCommand(ConfigService &configService);
     void execute(int argc, char *argv[]) override;
 };
 

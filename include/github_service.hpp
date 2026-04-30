@@ -3,18 +3,16 @@
 
 #include <string>
 #include <vector>
+#include "config_service.hpp"
 
 class GithubService
 {
 private:
-    std::string token;
+    ConfigService &configService;
 
 public:
-    GithubService(std::string token);
-    GithubService();
+    GithubService(ConfigService &configService);
     std::vector<std::pair<std::string, double>> getMostUsedLanguages(std::string login);
-    void setToken(std::string token);
-    std::string getToken();
 };
 
 #endif

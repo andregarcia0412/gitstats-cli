@@ -4,9 +4,9 @@
 class ConfigListCommand : ICommand
 {
 private:
-    ConfigService configService;
+    ConfigService &configService;
 
 public:
-    ConfigListCommand(ConfigService configService);
+    ConfigListCommand(ConfigService &configService);
     void execute(int argc, char *argv[]) override;
 };
