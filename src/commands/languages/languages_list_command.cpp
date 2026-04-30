@@ -9,7 +9,7 @@ void LanguagesListCommand::execute(int argc, char *argv[])
 {
     if (argc < 3)
     {
-        cout << "Use: languages <user>" << endl;
+        cout << "Usage: gitstats languages <user>" << endl;
         return;
     }
 

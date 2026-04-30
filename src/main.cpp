@@ -8,6 +8,7 @@
 #include "remove_token_command.hpp"
 #include "config_list_command.hpp"
 #include "languages_list_command.hpp"
+#include "help_command.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -17,7 +18,7 @@ int main(int argc, char *argv[])
     map<string, function<void(int, char **)>> commands;
     commands["help"] = [](int argc, char *argv[])
     {
-        cout << "this is help" << endl;
+        HelpCommand().execute(argc, argv);
     };
 
     commands["config"] = [&configService](int argc, char *argv[])

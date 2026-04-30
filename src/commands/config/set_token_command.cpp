@@ -8,7 +8,7 @@ void SetTokenCommand::execute(int argc, char *argv[])
 {
     if (argc < 4)
     {
-        cout << "Nothing specified, nothing added\nTry gitstats config --set-token <value>" << endl;
+        cout << "Missing token.\nUsage: gitstats config --set-token <token>" << endl;
         return;
     }
     string token = argv[3];
