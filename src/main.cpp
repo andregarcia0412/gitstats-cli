@@ -52,6 +52,15 @@ int main(int argc, char *argv[])
         LanguagesListCommand(githubService).execute(argc, argv);
     };
 
+    commands["user"] = [&githubService](int argc, char *argv[])
+    {
+        auto result = githubService.getUserInfo(argv[2]);
+        for (int i = 0; i < result.size(); i++)
+        {
+            cout << result[i].first << ": " << result[i].second << endl;
+        }
+    };
+
     if (argc < 2)
     {
         commands["help"](argc, argv);

@@ -7,44 +7,23 @@
 using json = nlohmann::json;
 using namespace std;
 
-static size_t WriteCallback(void *contents, size_t size, size_t nmemb, std::string *output)
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, string *output)
 {
     output->append((char *)contents, size * nmemb);
     return size * nmemb;
 }
 
-GithubService::GithubService(ConfigService &configService) : configService(configService) {}
-
-std::vector<pair<std::string, double>> GithubService::getMostUsedLanguages(std::string login)
+GithubService::GithubService(ConfigService &configService) : configService(configService)
 {
-    string token = configService.getTokenFromConfigFile();
-    map<string, long long> languageBytes;
-    string response;
+    this->token = configService.getTokenFromConfigFile();
+}
 
+string GithubService::makeGraphQLApiCall(json body)
+{
+    string response;
     CURL *curl = curl_easy_init();
     if (!curl)
         throw runtime_error("Error while initializing CURL");
-
-    string query = R"(
-    query($login: String!) {
-        user(login: $login) {
-            repositories(first: 100, ownerAffiliations: OWNER) {
-                nodes {
-                    isFork
-                    languages(first: 100) {
-                        edges {
-                            size
-                            node { name }
-                        }
-                    }
-                }
-            }
-        }
-    })";
-
-    json body = {
-        {"query", query},
-        {"variables", {{"login", login}}}};
 
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, ("Authorization: Bearer " + token).c_str());
@@ -69,7 +48,37 @@ std::vector<pair<std::string, double>> GithubService::getMostUsedLanguages(std::
         throw runtime_error("Error: Request Failed");
     }
 
-    auto data = json::parse(response);
+    curl_easy_cleanup(curl);
+    curl_slist_free_all(headers);
+    return response;
+}
+
+vector<pair<string, double>> GithubService::getMostUsedLanguages(string login)
+{
+    map<string, long long> languageBytes;
+
+    string query = R"(
+    query($login: String!) {
+        user(login: $login) {
+            repositories(first: 100, ownerAffiliations: OWNER) {
+                nodes {
+                    isFork
+                    languages(first: 100) {
+                        edges {
+                            size
+                            node { name }
+                        }
+                    }
+                }
+            }
+        }
+    })";
+
+    json body = {
+        {"query", query},
+        {"variables", {{"login", login}}}};
+
+    auto data = json::parse(makeGraphQLApiCall(body));
     if (data["status"] == "401")
     {
         throw runtime_error("Error: Bad Credentials");
@@ -90,9 +99,6 @@ std::vector<pair<std::string, double>> GithubService::getMostUsedLanguages(std::
             languageBytes[name] += size;
         }
     }
-
-    curl_easy_cleanup(curl);
-    curl_slist_free_all(headers);
 
     long long total = 0;
     languageBytes.erase("Jupyter Notebook");
@@ -122,4 +128,57 @@ std::vector<pair<std::string, double>> GithubService::getMostUsedLanguages(std::
         top10.push_back(sorted[i]);
     }
     return top10;
+}
+
+vector<pair<string, double>> GithubService::getUserInfo(string login)
+{
+
+    string query = R"(
+    query($login: String!) {
+    user(login: $login) {
+        createdAt
+
+        followers {
+        totalCount
+        }
+
+        following {
+        totalCount
+        }
+
+        contributionsCollection {
+        totalCommitContributions
+        totalPullRequestContributions
+        }
+
+        pullRequests {
+        totalCount
+        }
+
+        mergedPRs: pullRequests(states: MERGED) {
+        totalCount
+        }
+    }
+    }
+    )";
+
+    json body = {
+        {"query", query},
+        {"variables", {{"login", login}}}};
+
+    auto data = json::parse(makeGraphQLApiCall(body));
+    if (data["status"] == "401")
+    {
+        throw runtime_error("Error: Bad Credentials");
+    }
+
+    auto user = data["data"]["user"];
+    vector<pair<string, double>> result;
+    result.push_back({"Followers", user["followers"]["totalCount"]});
+    result.push_back({"Following", user["following"]["totalCount"]});
+    result.push_back({"Commits", user["contributionsCollection"]["totalCommitContributions"]});
+    result.push_back({"Pull Requests", user["pullRequests"]["totalCount"]});
+    result.push_back({"Merged Pull Requests", user["mergedPRs"]["totalCount"]});
+
+    return result;
 }
