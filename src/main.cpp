@@ -9,6 +9,7 @@
 #include "config_list_command.hpp"
 #include "languages_list_command.hpp"
 #include "help_command.hpp"
+#include "user_info_command.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -54,11 +55,7 @@ int main(int argc, char *argv[])
 
     commands["user"] = [&githubService](int argc, char *argv[])
     {
-        auto result = githubService.getUserInfo(argv[2]);
-        for (int i = 0; i < result.size(); i++)
-        {
-            cout << result[i].first << ": " << result[i].second << endl;
-        }
+        UserInfoCommand(githubService).execute(argc, argv);
     };
 
     if (argc < 2)
