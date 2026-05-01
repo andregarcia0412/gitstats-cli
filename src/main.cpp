@@ -10,6 +10,7 @@
 #include "languages_list_command.hpp"
 #include "help_command.hpp"
 #include "user_info_command.hpp"
+#include "user_help_command.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -35,24 +36,29 @@ int main(int argc, char *argv[])
         if (subcmd == "--set-token")
         {
             SetTokenCommand(configService).execute(argc, argv);
+            return;
         }
 
         if (subcmd == "--remove-token")
         {
             RemoveTokenCommand(configService).execute(argc, argv);
+            return;
         }
 
         if (subcmd == "--list")
         {
             ConfigListCommand(configService).execute(argc, argv);
+            return;
         }
+
+        ConfigHelpCommand().execute(argc, argv);
     };
 
     commands["user"] = [&githubService](int argc, char *argv[])
     {
         if (argc < 3)
         {
-            ConfigHelpCommand().execute(argc, argv);
+            UserHelpCommand().execute(argc, argv);
             return;
         }
 
@@ -61,12 +67,16 @@ int main(int argc, char *argv[])
         if (subcmd == "--langs" || subcmd == "--languages")
         {
             LanguagesListCommand(githubService).execute(argc, argv);
+            return;
         }
 
         if (subcmd == "--info")
         {
             UserInfoCommand(githubService).execute(argc, argv);
+            return;
         }
+
+        UserHelpCommand().execute(argc, argv);
     };
 
     if (argc < 2)
