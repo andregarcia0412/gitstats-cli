@@ -48,14 +48,25 @@ int main(int argc, char *argv[])
         }
     };
 
-    commands["languages"] = [&githubService](int argc, char *argv[])
-    {
-        LanguagesListCommand(githubService).execute(argc, argv);
-    };
-
     commands["user"] = [&githubService](int argc, char *argv[])
     {
-        UserInfoCommand(githubService).execute(argc, argv);
+        if (argc < 3)
+        {
+            ConfigHelpCommand().execute(argc, argv);
+            return;
+        }
+
+        string subcmd = string(argv[2]);
+
+        if (subcmd == "--langs" || subcmd == "--languages")
+        {
+            LanguagesListCommand(githubService).execute(argc, argv);
+        }
+
+        if (subcmd == "--info")
+        {
+            UserInfoCommand(githubService).execute(argc, argv);
+        }
     };
 
     if (argc < 2)

@@ -7,15 +7,15 @@ LanguagesListCommand::LanguagesListCommand(GithubService &githubService) : githu
 
 void LanguagesListCommand::execute(int argc, char *argv[])
 {
-    if (argc < 3)
+    if (argc < 4)
     {
-        cout << "Usage: gitstats languages <user>" << endl;
+        cout << "Usage: gitstats user --languages/--langs <user>" << endl;
         return;
     }
 
     try
     {
-        auto langs = githubService.getMostUsedLanguages(argv[2]);
+        auto langs = githubService.getMostUsedLanguages(argv[3]);
         for (auto &[lang, percent] : langs)
         {
             cout << fixed << setprecision(2) << lang << ": " << percent << "%" << endl;

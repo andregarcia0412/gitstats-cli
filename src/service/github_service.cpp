@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <curl/curl.h>
 #include "json.hpp"
+#include <iostream>
 
 using json = nlohmann::json;
 using namespace std;
@@ -170,6 +171,11 @@ vector<pair<string, double>> GithubService::getUserInfo(string login)
     if (data["status"] == "401")
     {
         throw runtime_error("Error: Bad Credentials");
+    }
+
+    if (!data.contains("data") || data["data"]["user"].is_null())
+    {
+        throw runtime_error("Error: User Not Found");
     }
 
     auto user = data["data"]["user"];
