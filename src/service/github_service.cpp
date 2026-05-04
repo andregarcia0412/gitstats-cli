@@ -59,9 +59,13 @@ vector<pair<string, double>> GithubService::getMostUsedLanguages(string login)
     map<string, long long> languageBytes;
 
     string query = R"(
-    query($login: String!) {
+    query($login: String!, $cursor: String) {
         user(login: $login) {
-            repositories(first: 100, ownerAffiliations: OWNER) {
+            repositories(first: 100, after: $cursor, ownerAffiliations: OWNER) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
                 nodes {
                     isFork
                     languages(first: 100) {
@@ -75,30 +79,50 @@ vector<pair<string, double>> GithubService::getMostUsedLanguages(string login)
         }
     })";
 
-    json body = {
-        {"query", query},
-        {"variables", {{"login", login}}}};
+    string cursor;
+    bool hasNext = true;
 
-    auto data = json::parse(makeGraphQLApiCall(body));
-    if (data["status"] == "401")
+    while (hasNext)
     {
-        throw runtime_error("Error: Bad Credentials");
-    }
-
-    auto repos = data["data"]["user"]["repositories"]["nodes"];
-
-    for (auto &repo : repos)
-    {
-        if (repo["isFork"])
-            continue;
-
-        for (auto &lang : repo["languages"]["edges"])
+        json variables = {{"login", login}};
+        if (!cursor.empty())
         {
-            string name = lang["node"]["name"];
-            long long size = lang["size"];
-
-            languageBytes[name] += size;
+            variables["cursor"] = cursor;
         }
+        else
+        {
+            variables["cursor"] = nullptr;
+        }
+
+        json body = {
+            {"query", query},
+            {"variables", variables}};
+
+        auto data = json::parse(makeGraphQLApiCall(body));
+        if (data["status"] == "401")
+        {
+            throw runtime_error("Error: Bad Credentials");
+        }
+
+        auto repos = data["data"]["user"]["repositories"]["nodes"];
+
+        for (auto &repo : repos)
+        {
+            if (repo["isFork"])
+                continue;
+
+            for (auto &lang : repo["languages"]["edges"])
+            {
+                string name = lang["node"]["name"];
+                long long size = lang["size"];
+
+                languageBytes[name] += size;
+            }
+        }
+
+        auto pageInfo = data["data"]["user"]["repositories"]["pageInfo"];
+        hasNext = pageInfo["hasNextPage"].get<bool>();
+        cursor = pageInfo["endCursor"].is_null() ? "" : pageInfo["endCursor"].get<string>();
     }
 
     long long total = 0;
