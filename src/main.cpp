@@ -11,6 +11,8 @@
 #include "help_command.hpp"
 #include "user_info_command.hpp"
 #include "user_help_command.hpp"
+#include "repo_info_command.hpp"
+
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -77,6 +79,23 @@ int main(int argc, char *argv[])
         }
 
         UserHelpCommand().execute(argc, argv);
+    };
+
+    commands["repository"] = [&githubService](int argc, char *argv[])
+    {
+        if (argc < 4)
+        {
+            cout << "Help" << endl;
+            return;
+        }
+
+        string subcmd = string(argv[2]);
+
+        if (subcmd == "--info")
+        {
+            RepoInfoCommand(githubService).execute(argc, argv);
+            return;
+        }
     };
 
     if (argc < 2)
