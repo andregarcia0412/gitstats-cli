@@ -16,6 +16,7 @@ void HelpCommand::execute(int argc, char *argv[])
      cout << "  help                            Show this help message" << endl;
      cout << "  config <option>                 Manage local config" << endl;
      cout << "  user <option> <user>            GitHub user operations" << endl;
+     cout << "  repository <option> <owner> <repo> GitHub repository operations" << endl;
      cout << "  languages <user>                Alias for: gitstats user --languages <user>" << endl
           << endl;
      cout << "User options:" << endl;
@@ -27,6 +28,9 @@ void HelpCommand::execute(int argc, char *argv[])
      cout << "  --remove-token                  Remove token from config file" << endl;
      cout << "  --list                          List config values" << endl
           << endl;
+     cout << "Repository options:" << endl;
+     cout << "  --info <owner> <repo>            Show GitHub repository info" << endl
+          << endl;
      cout << "Examples:" << endl;
      cout << "  gitstats help" << endl;
      cout << "  gitstats config --set-token ghp_xxxxx" << endl;
@@ -34,6 +38,7 @@ void HelpCommand::execute(int argc, char *argv[])
      cout << "  gitstats config --remove-token" << endl;
      cout << "  gitstats user --languages torvalds" << endl;
      cout << "  gitstats user --info torvalds" << endl;
+     cout << "  gitstats repository --info torvalds linux" << endl;
      cout << "  gitstats languages torvalds" << endl
           << endl;
      cout << "Notes:" << endl;
