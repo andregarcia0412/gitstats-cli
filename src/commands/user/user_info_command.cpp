@@ -15,9 +15,9 @@ void UserInfoCommand::execute(int argc, char *argv[])
     try
     {
         auto result = githubService.getUserInfo(argv[3]);
-        for (int i = 0; i < result.size(); i++)
+        for (const auto &item : result)
         {
-            cout << result[i].first << ": " << result[i].second << endl;
+            cout << item.first << ": " << item.second << endl;
         }
     }
     catch (exception &e)
