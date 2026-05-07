@@ -225,6 +225,8 @@ vector<pair<string, string>> GithubService::getRepoInfo(string owner, string nam
             forkCount
             url
             createdAt
+            pushedAt
+            homepageUrl
             pullRequests(states: OPEN) {
                 totalCount
             }
@@ -274,6 +276,14 @@ vector<pair<string, string>> GithubService::getRepoInfo(string owner, string nam
     result.push_back({"Pull Requests", to_string(repo["pullRequests"]["totalCount"])});
     result.push_back({"Commits", to_string(repo["defaultBranchRef"]["target"]["history"]["totalCount"])});
     result.push_back({"Created At", formatDate(repo["createdAt"])});
+    if (!repo["pushedAt"].is_null())
+    {
+        result.push_back({"Last Pushed At", formatDate(repo["pushedAt"])});
+    }
+    if (!repo["homepageUrl"].is_null())
+    {
+        result.push_back({"Homepage URL", repo["homepageUrl"]});
+    }
     result.push_back({"URL", repo["url"]});
     return result;
 }
