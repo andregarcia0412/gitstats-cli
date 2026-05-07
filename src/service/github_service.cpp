@@ -223,11 +223,17 @@ vector<pair<string, string>> GithubService::getRepoInfo(string owner, string nam
             description
             stargazerCount
             forkCount
+            watchers {
+                totalCount
+            }
             url
             createdAt
             pushedAt
             homepageUrl
             pullRequests(states: OPEN) {
+                totalCount
+            }
+            issues(states: OPEN) {
                 totalCount
             }
             primaryLanguage {
@@ -270,11 +276,13 @@ vector<pair<string, string>> GithubService::getRepoInfo(string owner, string nam
     {
         result.push_back({"Description", repo["description"]});
     }
+    result.push_back({"Primary Language", repo["primaryLanguage"]["name"]});
     result.push_back({"Stars", to_string(repo["stargazerCount"])});
     result.push_back({"Forks", to_string(repo["forkCount"])});
-    result.push_back({"Primary Language", repo["primaryLanguage"]["name"]});
-    result.push_back({"Pull Requests", to_string(repo["pullRequests"]["totalCount"])});
+    result.push_back({"Watchers", to_string(repo["watchers"]["totalCount"])});
     result.push_back({"Commits", to_string(repo["defaultBranchRef"]["target"]["history"]["totalCount"])});
+    result.push_back({"Pull Requests", to_string(repo["pullRequests"]["totalCount"])});
+    result.push_back({"Issues", to_string(repo["issues"]["totalCount"])});
     result.push_back({"Created At", formatDate(repo["createdAt"])});
     if (!repo["pushedAt"].is_null())
     {
@@ -282,7 +290,7 @@ vector<pair<string, string>> GithubService::getRepoInfo(string owner, string nam
     }
     if (!repo["homepageUrl"].is_null())
     {
-        result.push_back({"Homepage URL", repo["homepageUrl"]});
+        result.push_back({"Website", repo["homepageUrl"]});
     }
     result.push_back({"URL", repo["url"]});
     return result;
