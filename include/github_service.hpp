@@ -19,6 +19,7 @@ public:
     GithubService(ConfigService &configService);
     std::vector<std::pair<std::string, double>> getMostUsedLanguages(std::string login);
     std::vector<std::pair<std::string, double>> getUserInfo(std::string login);
+    std::vector<std::pair<std::string, std::string>> getRepoInfo(std::string owner, std::string name);
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #include "json.hpp"
 #include <iostream>
+#include "utils/format_date.hpp"
 
 using json = nlohmann::json;
 using namespace std;
@@ -210,5 +211,69 @@ vector<pair<string, double>> GithubService::getUserInfo(string login)
     result.push_back({"Pull Requests", user["pullRequests"]["totalCount"]});
     result.push_back({"Merged Pull Requests", user["mergedPRs"]["totalCount"]});
 
+    return result;
+}
+
+vector<pair<string, string>> GithubService::getRepoInfo(string owner, string name)
+{
+    string query = R"(
+    query($owner: String!, $name: String!) {
+        repository(owner: $owner, name: $name) {
+            name
+            description
+            stargazerCount
+            forkCount
+            url
+            createdAt
+            pullRequests(states: OPEN) {
+                totalCount
+            }
+            primaryLanguage {
+                name
+            }
+            defaultBranchRef {
+                target {
+                    ... on Commit {
+                        history {
+                            totalCount
+                        }
+                    }
+                }
+            }
+        }
+    }
+    )";
+
+    json body = {
+        {"query", query},
+        {"variables", {{"owner", owner}, {"name", name}}}};
+
+    auto data = json::parse(makeGraphQLApiCall(body));
+
+    if (data["status"] == 401)
+    {
+        throw runtime_error("Error: Bad Credentials");
+    }
+
+    if (data["data"]["repository"].is_null())
+    {
+        throw runtime_error("Error: Repository Not Found");
+    }
+
+    auto repo = data["data"]["repository"];
+    vector<pair<string, string>> result;
+
+    result.push_back({"Name", repo["name"]});
+    if (!repo["description"].is_null())
+    {
+        result.push_back({"Description", repo["description"]});
+    }
+    result.push_back({"Stars", to_string(repo["stargazerCount"])});
+    result.push_back({"Forks", to_string(repo["forkCount"])});
+    result.push_back({"Primary Language", repo["primaryLanguage"]["name"]});
+    result.push_back({"Pull Requests", to_string(repo["pullRequests"]["totalCount"])});
+    result.push_back({"Commits", to_string(repo["defaultBranchRef"]["target"]["history"]["totalCount"])});
+    result.push_back({"Created At", formatDate(repo["createdAt"])});
+    result.push_back({"URL", repo["url"]});
     return result;
 }
