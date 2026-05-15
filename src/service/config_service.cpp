@@ -8,8 +8,9 @@ namespace fs = std::filesystem;
 
 void ConfigService::createConfigFile()
 {
-    fs::create_directories("./.config");
-    ofstream configFile("./.config/config.json");
+    fs::path configFilePath = getConfigFile();
+    fs::create_directories(configFilePath.parent_path());
+    ofstream configFile(configFilePath);
 
     if (!configFile.is_open())
     {
@@ -22,27 +23,28 @@ void ConfigService::createConfigFile()
 
 void ConfigService::setTokenOnConfigFile(string token)
 {
-
-    if (!fs::exists("./.config/config.json"))
+    fs::path configFilePath = getConfigFile();
+    if (!fs::exists(configFilePath))
         createConfigFile();
     json data;
 
-    ifstream inConfigFile("./.config/config.json");
+    ifstream inConfigFile(configFilePath);
     if (inConfigFile)
         inConfigFile >> data;
 
     data["token"] = token;
 
-    ofstream outConfigFile("./.config/config.json");
+    ofstream outConfigFile(configFilePath);
     outConfigFile << data.dump(2);
 }
 
 string ConfigService::getTokenFromConfigFile()
 {
-    if (!fs::exists("./.config/config.json"))
+    fs::path configFilePath = getConfigFile();
+    if (!fs::exists(configFilePath))
         return "";
 
-    ifstream configFile("./.config/config.json");
+    ifstream configFile(configFilePath);
     if (!configFile.is_open())
     {
         throw runtime_error("Error opening config file");
@@ -55,4 +57,26 @@ string ConfigService::getTokenFromConfigFile()
         return "";
 
     return data["token"].get<string>();
+}
+
+fs::path ConfigService::getConfigFile()
+{
+#ifdef _WIN32
+    const char *appData = getenv("APPDATA");
+    if (!appData)
+    {
+        throw runtime_error("APPDATA not found");
+    }
+
+    return fs::path(appData) / "gitstats" / ".config" / "config.json";
+
+#else
+    const char *home = getenv("HOME");
+    if (!home)
+    {
+        throw runtime_error("HOME not found");
+    }
+
+    return fs::path(home) / "gitstats" / ".config" / "config.json";
+#endif
 }
