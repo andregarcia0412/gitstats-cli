@@ -1,0 +1,7 @@
+Package: gitstats
+Version: 1.0.1
+Architecture: amd64
+Maintainer: André Garcia <andregarcia0412@gmail.com>
+Depends: libc6, libcurl4
+Description: Lightweight GitHub statistics CLI using GraphQL
+ GitStats CLI is a lightweight C++ tool that uses the GitHub GraphQL API to show user language distribution, user info, and repository info directly from the command line.

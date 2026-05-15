@@ -1,7 +1,10 @@
 APP = gitstats
+VERSION = 1.0.1
 CXX = g++
 CXXFLAGS = -std=c++17 -Iinclude -Wall -Wextra -MMD -MP
 LIBS = -lcurl
+ARCH = amd64
+DEB_NAME = $(APP)_$(VERSION)_$(ARCH)
 
 SRC = $(shell find src -name "*.cpp")
 OBJ = $(patsubst src/%.cpp, build/%.o, $(SRC))
@@ -41,6 +44,13 @@ uninstall:
 clean:
 	rm -rf build bin
 
-.PHONY: all install uninstall clean
+deb: all
+	mkdir -p build_deb/DEBIAN
+	cp debian/control build_deb/DEBIAN/
+	$(MAKE) PREFIX=/usr DESTDIR=./build_deb install	
+	dpkg-deb --build build_deb $(DEB_NAME).deb	
+	rm -rf build_deb
+
+.PHONY: all install uninstall clean deb
 
 -include $(DEP)
