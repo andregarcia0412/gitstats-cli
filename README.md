@@ -6,12 +6,35 @@
 </h1>
 
 <p align="center">
-  <a href="https://isocpp.org/"><img alt="C++17" src="https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white"></a>
-  <a href="https://www.gnu.org/software/make/"><img alt="Makefile build" src="https://img.shields.io/badge/build-Makefile-1f6feb?logo=gnu&logoColor=white"></a>
+  <a href="https://isocpp.org/">
+    <img alt="C++17" src="https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white">
+  </a>
+
+  <a href="https://www.gnu.org/software/make/">
+    <img alt="Makefile build" src="https://img.shields.io/badge/build-Makefile-1f6feb?logo=gnu&logoColor=white">
+  </a>
+
+  <a href="https://aur.archlinux.org/packages/gitstats">
+    <img alt="AUR version" src="https://img.shields.io/aur/version/gitstats">
+  </a>
+
+  <a>
+    <img alt="AUR downloads" src="https://img.shields.io/aur/popularity/gitstats">
+  <a/>
 </p>
 
 ## Summary
 GitStats CLI is a lightweight C++ tool that uses the GitHub GraphQL API to show user language distribution, user info, and repository info directly from the command line.
+
+## Installation
+
+### Arch Linux (AUR)
+
+Using yay:
+
+```bash
+yay -S gitstats
+```
 
 ## Stack
 - C++17
@@ -21,6 +44,7 @@ GitStats CLI is a lightweight C++ tool that uses the GitHub GraphQL API to show 
 
 ## Table of Contents
 - [Summary](#summary)
+- [Arch Installation](#installation)
 - [Stack](#stack)
 - [Run Locally](#run-locally)
 - [Build (Linux/macOS/Windows)](#build-linuxmacoswindows)
