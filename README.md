@@ -36,6 +36,15 @@ Using yay:
 yay -S gitstats
 ```
 
+### Ubuntu / Debian / Linux Mint
+
+Download the `.deb` package from the latest release and install it using `apt` (this automatically resolves required dependencies like `libcurl`):
+
+```bash
+wget https://github.com/andregarcia0412/gitstats-cli/releases/download/v1.0.1/gitstats_1.0.1_amd64.deb
+sudo apt install ./gitstats_1.0.1_amd64.deb
+```
+
 ## Stack
 - C++17
 - libcurl (HTTP)
@@ -44,7 +53,7 @@ yay -S gitstats
 
 ## Table of Contents
 - [Summary](#summary)
-- [Arch Installation](#installation)
+- [Installation](#installation)
 - [Stack](#stack)
 - [Run Locally](#run-locally)
 - [Build (Linux/macOS/Windows)](#build-linuxmacoswindows)
