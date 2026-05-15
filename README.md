@@ -1,6 +1,9 @@
-<h1 align="center">GitStats CLI</h1>
-
-<p align="center">GitHub language and profile stats from the terminal.</p>
+<h1 align="center">
+  <img
+    src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=55&duration=3000&pause=1000&color=58A6FF&center=true&vCenter=true&width=900&height=100&lines=GitStats+CLI"
+    alt="Typing SVG"
+  />
+</h1>
 
 <p align="center">
   <a href="https://isocpp.org/"><img alt="C++17" src="https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white"></a>
