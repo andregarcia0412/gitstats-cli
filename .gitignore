@@ -6,6 +6,7 @@
 !.gitignore
 !.gitattributes
 !Makefile
+!README.md
 
 .vscode
 .config
