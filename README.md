@@ -1,7 +1,5 @@
 <h1 align="center">GitStats CLI</h1>
 
-<p align="center">GitHub language and profile stats from the terminal.</p>
-
 <p align="center">
   <a href="https://isocpp.org/"><img alt="C++17" src="https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white"></a>
   <a href="https://www.gnu.org/software/make/"><img alt="Makefile build" src="https://img.shields.io/badge/build-Makefile-1f6feb?logo=gnu&logoColor=white"></a>
