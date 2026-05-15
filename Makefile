@@ -10,9 +10,12 @@ DEP= $(OBJ:.o=.d)
 ifeq ($(OS),Windows_NT)
 	EXE = .exe
 	INSTALL_DIR = $(USERPROFILE)/AppData/Local/Programs/$(APP)
+	PREFIX ?= $(USERPROFILE)/AppData/Local/Programs/$(APP)
+	BINDIR = $(PREFIX)
 else
 	EXE = 
-	INSTALL_DIR = $(HOME)/.local/bin
+	PREFIX ?= $(HOME)/.local
+	BINDIR = $(PREFIX)/bin
 endif
 
 OUT = bin/$(APP)$(EXE)
@@ -29,15 +32,15 @@ build/%.o: src/%.cpp
 
 
 install: $(OUT)
-	@mkdir -p "$(INSTALL_DIR)"
-	cp "$(OUT)" "$(INSTALL_DIR)/$(APP)$(EXE)"
-	chmod +x "$(INSTALL_DIR)/$(APP)$(EXE)" || true
-	@echo "$(APP) sucessfully installed in $(INSTALL_DIR)"
+	install -Dm755 "$(OUT)" "$(DESTDIR)$(BINDIR)/$(APP)$(EXE)"
+	@echo "$(APP) successfully installed in $(DESTDIR)$(BINDIR)"
 
 uninstall:
-	rm -f "$(INSTALL_DIR)/$(APP)$(EXE)"
+	rm -f "$(DESTDIR)$(BINDIR)/$(APP)$(EXE)"
 
 clean:
 	rm -rf build bin
+
+.PHONY: all install uninstall clean
 
 -include $(DEP)
