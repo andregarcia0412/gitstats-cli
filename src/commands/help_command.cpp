@@ -46,6 +46,4 @@ void HelpCommand::execute(int argc, char *argv[])
      cout << "  - Config file location: ./.config/config.json" << endl;
      cout << "  - Forked repositories are ignored." << endl;
      cout << "  - \"Jupyter Notebook\" language is excluded." << endl;
-     cout << "  - Output is the top 10 languages by percentage." << endl;
-     cout << "  - Percentages are printed with 2 decimal places." << endl;
 }
